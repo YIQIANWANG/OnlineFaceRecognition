@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<authority version="1.0">
+
+    <authority-module id="123" pkg="system" name="签到管理" order="10" type="modules" icon="fa fa-sitemap">
+        <authority-menu id="1231" name="学生信息管理" url="/admin/base/student/list" order="10" type="menu" icon="fa fa-user-circle-o">
+        </authority-menu>
+        <authority-menu id="1234" name="签到情况查询" url="/admin/base/sign/statistic" order="20" type="menu" icon="fa fa-user-circle-o">
+        </authority-menu>
+        <authority-menu id="1232" name="课堂签到" url="/admin/base/sign/list" order="30" type="menu" icon="fa fa-user-circle-o">
+        </authority-menu>
+    </authority-module>
+
+</authority>

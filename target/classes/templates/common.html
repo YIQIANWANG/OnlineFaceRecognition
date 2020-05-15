@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+	<head th:fragment="header(title,links,scripts,styles)">
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    	<title th:replace="${title}"></title>
+    	<link rel="stylesheet" th:href="@{/plugins/bootstrap/3.3.5/css/bootstrap.min.css}" />
+    	<link rel="stylesheet" th:href="@{/plugins/bootstrap-table/bootstrap-table.css}" />
+    	<link rel="stylesheet" th:href="@{/plugins/font-awesome/4.7.0/css/font-awesome.min.css}" />
+    	<link rel="stylesheet" th:href="@{/plugins/jquery-plugins/jquery.mCustomScrollbar.min.css}" />
+    	<link rel="stylesheet" th:href="@{/plugins/layui/2.5.4/css/layui.css}" />
+    	<link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/plugin-extend.css') }}" />
+    	<link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/framework.css') }}" />
+    	<th:block th:replace="${links}" />
+	    <!--[if lt IE 9]>
+	    <script th:src="@{/plugins/bootstrap/html5shiv.min.js}"></script>
+	    <script th:src="@{/plugins/bootstrap/respond.min.js}"></script>
+	    <![endif]-->
+	    <script th:src="@{/js/jquery-1.11.3.min.js}"></script>
+	    <script th:src="@{/plugins/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+	    <script th:src="@{${urls.getForLookupPath('/plugins/bootstrap-table/bootstrap-table.js') }}"></script>
+	    <script th:src="@{${urls.getForLookupPath('/plugins/bootstrap-table/locale/bootstrap-table-zh_CN.js') }}"></script>
+		<script th:src="@{/plugins/jquery-plugins/jquery.mCustomScrollbar.concat.min.js}"></script>
+		<script th:src="@{/plugins/layui/2.5.4/layui.js}"></script>
+		<script th:src="@{/plugins/jquery-plugins/jquery.tdrag.min.js}"></script>
+		<script th:src="@{${urls.getForLookupPath('/js/locale/framework-zh_CN.js') }}"></script>
+		<script th:src="@{${urls.getForLookupPath('/js/common/tool-date.js') }}"></script>
+		<script th:src="@{${urls.getForLookupPath('/js/common/framework.js') }}"></script>
+		<script th:src="@{${urls.getForLookupPath('/js/modules/c-selector.js') }}"></script>
+		<th:block th:replace="${scripts}" />
+    	<script type="text/javascript" th:inline="javascript">
+	    /*<![CDATA[*/
+	    var ctx = /*[[@{/}]]*/;
+	    /*]]>*/
+	    var layer; layui.use(['layer'], function(){ layer = layui.layer; layer.config({ skin: 'custom-class' }); });
+	    </script>
+	    <th:block th:replace="${styles}" />
+	</head>
+	<th:block th:fragment="treegird">
+		<link rel="stylesheet" th:href="@{/plugins/jquery-treegrid/css/jquery.treegrid.css}" />
+		<script th:src="@{/plugins/jquery-treegrid/js/jquery.treegrid.min.js}"></script>
+		<script th:src="@{/plugins/jquery-treegrid/js/jquery.treegrid.bootstrap3.js}"></script>
+		<script th:src="@{/plugins/bootstrap-table/extensions/treegrid/bootstrap-table-treegrid.min.js}"></script>
+	</th:block>
+	<th:block th:fragment="treeview">
+		<link rel="stylesheet" th:href="@{/plugins/bootstrap-treeview/bootstrap-treeview.css}" />
+		<script th:src="@{/plugins/bootstrap-treeview/bootstrap-treeview.js}"></script>
+	</th:block>
+</html>

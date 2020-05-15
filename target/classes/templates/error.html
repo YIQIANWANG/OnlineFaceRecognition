@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<title th:text="#{sys.error.page}">错误 - Error</title>
+    <link rel="stylesheet" th:href="@{/plugins/animate/animate.min.css}" />
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap/3.3.5/css/bootstrap.min.css}" />
+	<style type="text/css">
+	body {
+		margin: 0;
+		background: #E4E4E4 url("/images/bg-body.jpg");
+		font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		font-size: 13px;
+		color: #676a6c;
+		overflow-x: hidden;
+	}
+	.box {
+		max-width: 400px;
+		z-index: 100;
+		margin: 0 auto;
+		padding-top: 40px;
+		text-align: center;
+	}
+	
+	.box h1 {
+		font-size: 170px;
+		font-weight: bold;
+		margin-top: 20px;
+		margin-bottom: 10px;
+	}
+	
+	.box h3 {
+		margin-top: 5px;
+		font-weight: 600;
+		font-size: 16px;
+		margin-bottom: 10px;
+		font-family: inherit;
+		color: inherit;
+	}
+	
+	.box .desc {
+		margin-bottom: 10px;
+	}
+	</style>
+</head>
+<body>
+	<div class="box animated fadeInDown">
+        <h1 th:text="${status}"></h1>
+        <h3 th:text="${error}"></h3>
+        <h3 th:text="${path}"></h3>
+        <h3 th:text="${message}"></h3>
+        <div class="desc"></div>
+    </div>
+</body>
+</html>

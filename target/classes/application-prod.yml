@@ -1,0 +1,18 @@
+
+#spring
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/student_face?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password:
+
+  jpa:
+    show-sql: true
+
+#customer config
+#system
+sys:
+  init:
+    data: true
+  upload:
+    path: C:/Users/16281281/Desktop/

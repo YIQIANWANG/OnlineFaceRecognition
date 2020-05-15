@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="common :: header(title=~{::title}, links=~{}, scripts=~{}, styles=~{})">
+    <meta charset="utf-8"/>
+    <title></title>
+</head>
+<body>
+    <div class="b-container">
+        <div class="b-layout b-layout-center">
+            <div class="layui-fluid ls-card-fluid">
+                <div class="layui-card ls-card">
+                    <div class="layui-form layui-card-header layui-form-pane">
+                        <form>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">学号</label>
+                                    <div class="layui-input-inline">
+                                        <input id="no" name="no" type="text" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="javascript:$('#data_list').bootstrapTable('refresh');"><i class="fa fa-search fa-fw"></i>查询
+                                        </button>
+                                        <button type="reset" class="layui-btn layui-btn-primary"><i class="fa fa-rotate-left fa-fw"></i>重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-card-body ls-body-table">
+                        <table id="data_list"></table>
+                        <div id="toolbar">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default"
+                                        onclick="LS.openFormDialog({title:'新增', tableId:'data_list', url:ctx+'admin/base/student/add', width:'950px', height: LS.size().height + 'px'})"><i
+                                        class="fa fa-plus"></i> 新增
+                                </button>
+                                <button type="button" class="btn btn-default"
+                                        onclick="LS.updateTableData({title:'修改', tableId:'data_list', url:ctx+'admin/base/student/update', width: '950px', height: LS.size().height + 'px'})"><i
+                                        class="fa fa-edit"></i> 修改
+                                </button>
+                                <button type="button" class="btn btn-default"
+                                        onclick="LS.deleteTableData({tableId:'data_list',url:ctx+'admin/base/student/delete', msg:'确定要删除？'})"><i class="fa fa-trash-o"></i> 删除
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+    </script>
+    <script type="text/javascript">
+        LS.initLayForm({
+            initFun: function(layo) {
+                LS.bootstrapTable("data_list", {
+                    url: ctx + "admin/base/student/list",
+                    search: false,
+                    toolbar: "#toolbar",
+                    showToggleQuery: true,
+                    columns: [
+                        {checkbox: true, width: "5%"},
+                        {
+                            width: "120px", field: "photo", title: "照片", align: 'center', sortable: true, formatter: function(value, row) {
+                                if (!value) {
+                                    value = "/images/default-header.jpg";
+                                }
+                                return "<img src='" + ctx + value.substring(1) + "' style='width: 50px; height: 50px;' >"
+                            }
+                        },
+                        {
+                            width: "120px", field: "no", title: "学号", align: 'center', sortable: true, formatter: function(value, row) {
+                                return "<a class='td-a' href='javascript:;'>" + value + "</a>";
+                            }
+                        },
+                        {width: "90px", field: "name", title: "姓名", align: 'center', sortable: true},
+                        {
+                            width: "60px", field: "sex", title: "性别", align: 'center', sortable: true
+                        },
+                        {width: "120px", field: "birth", title: "生日", align: 'center'},
+                        {width: "100px", field: "phone", title: "手机号码", align: 'center'},
+                    ],
+
+                    queryParams: function(sParams) {
+                        return getParams(sParams);
+                    }
+
+                });
+            }
+        });
+
+        function getParams(sParams) {
+            var params = sParams || {};
+            params['no'] = $("#no").val();
+            return params;
+        }
+    </script>
+</body>
+</html>

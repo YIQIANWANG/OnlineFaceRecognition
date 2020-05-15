@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="common :: header(title=~{::title}, links=~{}, scripts=~{}, styles=~{})">
+    <meta charset="utf-8"/>
+    <title></title>
+</head>
+<body>
+    <div class="b-container">
+        <div class="b-layout b-layout-center">
+            <div class="layui-fluid ls-card-fluid">
+                <div class="layui-card ls-card">
+                    <div class="layui-form layui-card-header layui-form-pane">
+                        <form>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">课堂名称</label>
+                                    <div class="layui-input-inline">
+                                        <input id="name" name="name" type="text" autocomplete="off" class="layui-input">
+                                        <input type="hidden" id="signId">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">请先输入课堂名称创建课堂，创建完成方可签到</div>
+                                </div>
+                                <div class="layui-inline">
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="onCreate()"> 创建
+                                        </button>
+                                    </div>
+
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="deleteSign()"> 删除
+                                        </button>
+                                    </div>
+
+
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="onStart()"> 开始签到
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-card-body ls-body-table">
+                        <table id="data_list"></table>
+                        <div id="toolbar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+    </script>
+    <script type="text/javascript">
+        LS.initLayForm({
+            initFun: function(layo) {
+                LS.bootstrapTable("data_list", {
+                    url: ctx + "admin/base/sign/list",
+                    search: false,
+                    toolbar: "#toolbar",
+                    showToggleQuery: false,
+                    pageSize: 200,
+                    pageList: [200, 500],
+                    columns: [
+                        {checkbox: true, width: "5%"},
+                        {
+                            width: "120px", field: "photo", title: "照片", align: 'center', formatter: function(value, row) {
+                                if (!value) {
+                                    value = "/images/default-header.jpg";
+                                }
+                                return "<img src='" + ctx + value.substring(1) + "' style='width: 50px; height: 50px;' >"
+                            }
+                        },
+                        {
+                            width: "120px", field: "no", title: "学号", align: 'center', formatter: function(value, row) {
+                                return "<a class='td-a' href='javascript:;'>" + value + "</a>";
+                            }
+                        },
+                        {width: "90px", field: "name", title: "姓名", align: 'center'},
+                        {width: "60px", field: "sex", title: "性别", align: 'center'},
+                        {width: "120px", field: "birth", title: "生日", align: 'center'},
+                        {width: "100px", field: "phone", title: "手机号码", align: 'center'},
+                        {
+                            width: "120px", field: "isSuccess", title: "是否签到", align: 'center', formatter: function(value, row) {
+                                if (value) {
+                                    return "<span style='font-weight: bold; color: green'>已签到</span>"
+                                } else {
+                                    return "<span style='font-weight: bold; color: red'>未签到</span>"
+                                }
+                            }
+                        },
+                        {width: "120px", field: "signTime", title: "签到时间", align: 'center'}
+                    ],
+
+                    queryParams: function(sParams) {
+                        return getParams(sParams);
+                    }
+
+                });
+            }
+        });
+
+        function getParams(sParams) {
+            var params = sParams || {};
+            params['signId'] = $("#signId").val();
+            return params;
+        }
+
+
+        function onCreate() {
+            LS.ajax(ctx + "admin/base/sign/create", {name: $("#name").val()}, function(res) {
+                if (res.code === 1) {
+                    $("#signId").val(res.datas.sign.id);
+                    $('#data_list').bootstrapTable('refresh');
+                    alert("创建成功，点击【开始签到】按钮签到，签到过程中请勿离开此页面")
+                } else {
+                    alert(res.msg);
+                }
+            });
+        }
+        function deleteSign() {
+            top.dialog.confirm("确定要删除？", function(){
+                LS.ajax(ctx + "admin/base/sign/delete", {signId: $("#signId").val()}, function(res) {
+                    if (res.code === 1) {
+                        $("#signId").val("");
+                        $("#name").val("");
+                        $('#data_list').bootstrapTable('refresh');
+                        alert("删除成功")
+                    } else {
+                        alert(res.msg);
+                    }
+                });
+            });
+
+
+        }
+
+        function onStart() {
+            var signId = $("#signId").val();
+            if (signId === "") {
+                top.toast.warn("请先创建课堂");
+            } else {
+                LS.openFormDialog({
+                    title: '签到',
+                    url: ctx + 'admin/base/sign/do?signId=' + signId + '&windowName=' + window.name,
+                    width: '560px',
+                    height: LS.size().height + 'px',
+                    showOkBtn: false
+                })
+            }
+        }
+
+        function refresh(){
+            $('#data_list').bootstrapTable('refresh');
+        }
+    </script>
+</body>
+</html>

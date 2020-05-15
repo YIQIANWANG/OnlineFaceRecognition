@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache name="ls-ehcache-shiro" updateCheck="true" monitoring="autodetect" dynamicConfig="true">
+
+	<diskStore path="java.io.tmpdir/chensoft/shiro" />
+
+	<defaultCache maxElementsInMemory="10000" eternal="false" timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000" diskPersistent="false" diskExpiryThreadIntervalSeconds="120" memoryStoreEvictionPolicy="LRU" />
+
+	<cache name="shiro-authorizationCache" maxElementsInMemory="10000" overflowToDisk="true" eternal="false" timeToLiveSeconds="0"
+		timeToIdleSeconds="3600" diskPersistent="true" diskExpiryThreadIntervalSeconds="600" />
+
+	<cache name="shiro-activeSessionCache" maxElementsInMemory="10000" overflowToDisk="true" eternal="false" timeToLiveSeconds="0"
+		timeToIdleSeconds="3600" diskPersistent="true" diskExpiryThreadIntervalSeconds="600" />
+
+</ehcache>

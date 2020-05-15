@@ -1,0 +1,33 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<configuration>
+
+    <!-- 控制台输出 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[LS] %d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%C.%M] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="console"/>
+    </root>
+
+    <springProfile name="dev">
+        <logger name="com.chenframework" level="DEBUG"/>
+        <logger name="org.springframework" level="WARN"/>
+        <logger name="org.hibernate" level="WARN"/>
+        <logger name="org.thymeleaf" level="WARN"/>
+        <logger name="org.apache.shiro" level="WARN"/>
+        <logger name="springfox.documentation" level="ERROR"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="com.chenframework" level="ERROR"/>
+        <logger name="org.springframework" level="ERROR"/>
+        <logger name="org.hibernate" level="ERROR"/>
+        <logger name="org.thymeleaf" level="ERROR"/>
+        <logger name="org.apache.shiro" level="ERROR"/>
+        <logger name="springfox.documentation" level="ERROR"/>
+    </springProfile>
+
+</configuration>

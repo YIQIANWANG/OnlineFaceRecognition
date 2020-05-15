@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title>课堂签到系统</title>
+    <link rel="stylesheet" th:href="@{/plugins/bootstrap/3.3.5/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/font-awesome/4.7.0/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/jquery-plugins/jquery.mCustomScrollbar.min.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/jquery-plugins/metisMenu.min.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/animate/animate.min.css}"/>
+    <link rel="stylesheet" th:href="@{/plugins/toast/css/toast.style.css}"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/plugin-extend.css') }}"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/framework.css') }}"/>
+    <link rel="stylesheet" th:href="@{${urls.getForLookupPath('/css/index.css') }}"/>
+    <!--[if lt IE 9]>
+    <script th:src="@{/plugins/bootstrap/html5shiv.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/respond.min.js}"></script>
+    <![endif]-->
+    <script type="text/javascript" th:inline="javascript">
+        /*<![CDATA[*/
+        var ctx = /*[[@{/}]]*/;
+        /*]]>*/
+    </script>
+</head>
+<body>
+    <div class="ls-layout-header">
+        <div class="ls-header-menu-item" style="margin-left: 20px;">
+            <a id="btn-side-outdent" href="javascript:void(0);" class="ls-header-menu-btn" title="左侧伸缩"><i class="fa fa-outdent fa-fw"></i></a>
+        </div>
+    </div>
+    <div class="ls-header-menu">
+        <div class="ls-header-menu-item">
+            <a href="javascript:toHomePage()" class="ls-header-menu-btn" title="首页"><i class="fa fa-home fa-fw"></i></a>
+        </div>
+        <div class="ls-header-menu-item">
+            <a href="javascript:void(0)" class="ls-header-menu-btn"><i class="fa fa-user-circle-o fa-fw"></i><span>管理员</span></a>
+        </div>
+        <div class="ls-header-menu-item item-dropdown">
+            <a href="javascript:void(0)" class="ls-header-menu-btn"><i class="fa fa-cog fa-fw"></i><span>设置</span></a>
+            <div class="dropdown-info">
+                <ul>
+                    <li><a href="javascript:logout();"><i class="fa fa-sign-out"></i>注销登录</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="ls-layout-left">
+        <div class="ls-layout-left-title"><span>课堂签到系统</span></div>
+        <div class="ls-layout-left-menu mCustomScrollbar" data-mcs-theme="minimal-dark" data-mcs-axis="y">
+            <nav class="navbar navbar-static-top">
+                <div class="sidebar" role="navigation">
+                    <ul class="nav metismenu" id="side-menu">
+
+                        <li>
+                            <a class="menu-first" href="javascript:;"><i class="fa fa-sitemap fa-fw'"></i><span class="menu-text">签到管理</span><span class="fa arrow"></span></a>
+                            <ul class="nav" style="background: #373d41;">
+                                <li>
+                                    <a id="menu-111" class="menu-second" href="javascript:;" th:attr="data-url=@{/admin/base/student/list}" data-open='iframe'>
+                                        <i class="fa fa-user-circle-o fa-fw'"></i><span class="menu-text">学生信息管理</span>
+
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="menu-333" class="menu-second" href="javascript:;" th:attr="data-url=@{/admin/base/sign/statistic}" data-open='iframe'>
+                                        <i class="fa fa-user-circle-o fa-fw'"></i><span class="menu-text">签到情况查询</span>
+
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id="menu-222" class="menu-second" href="javascript:;" th:attr="data-url=@{/admin/base/sign/list}" data-open='iframe'>
+                                        <i class="fa fa-user-circle-o fa-fw'"></i><span class="menu-text">课堂签到</span>
+
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+    <div class="ls-layout-center">
+        <div class="ls-tabs">
+            <a href="javascript:;" class="tabs-roll roll-left"><i class="fa fa-backward"></i></a>
+            <a href="javascript:;" class="tabs-roll roll-right"><i class="fa fa-forward"></i></a>
+            <a href="javascript:;" class="tabs-roll tab-dropdown"><i class="fa fa-chevron-down"></i></a>
+            <div class="tabs-item-container">
+                <ul class="nav nav-tabs">
+                    <li id="li-ls-home" class="active" data-closable="false"><a href="#tab-ls-home" data-toggle="tab"><i class="fa fa-home"></i>首页</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="tab-ls-home">
+                <iframe id="frame-ls-home" name="frame-ls-home" frameborder="0" th:src="@{/admin/home}"></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="ls-layout-bottom">
+    </div>
+    <div class="ls-page-loading">
+        <div class="loading-container">
+            <div class="loader">
+                <div class="loader-outter"></div>
+                <div class="loader-inner"></div>
+            </div>
+            <div class="loader-text">页面加载中,请稍后...</div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/jquery-1.11.3.min.js}"></script>
+    <script th:src="@{/plugins/bootstrap/3.3.5/js/bootstrap.min.js}"></script>
+    <script th:src="@{/plugins/jquery-plugins/jquery.mCustomScrollbar.concat.min.js}"></script>
+    <script th:src="@{/plugins/jquery-plugins/metisMenu.min.js}"></script>
+    <script th:src="@{/plugins/layer/3.1.1/layer.js}"></script>
+    <script th:src="@{/plugins/toast/js/toast.script.js}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/common/framework-dialog.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/common/index-tab.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/common/index.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/js/modules/index.js') }}"></script>
+</body>
+</html>

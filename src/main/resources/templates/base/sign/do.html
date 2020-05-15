@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" >
+<head th:include="common :: header(title=~{::title}, links=~{}, scripts=~{}, styles=~{::style})">
+    <meta charset="utf-8"/>
+    <title>
+    </title>
+    <style>
+        .ca-right{width: 540px; position: relative;}
+        .face-container{width: 500px; height: 320px; position: relative; margin: 10px 20px;}
+        .face-container .rect{position: absolute; border: 2px solid red; z-index: 2000;}
+        #video, #image, #canvas{width: 420px; height: 315px; position: absolute; left: 40px; z-index: 900; }
+        #video{z-index: 1000; border: 2px solid #fff; border-radius: 5px;}
+        #canvas{z-index: 800; }
+        #face-console{width: 420px; height: 200px; margin: 0 auto; margin-top: 10px; border: 1px dashed gray; background: black; overflow: hidden;}
+        .console{padding: 5px; color: red; }
+        .console.green{color: green;}
+    </style>
+</head>
+<body>
+    <input type="hidden" id="signId" th:value="${signId}">
+    <div class="b-container">
+        <div class="b-layout b-layout-center">
+            <div class="layui-fluid ls-card-fluid">
+                <div class="layui-card ls-card">
+                    <div class="layui-card-body ls-body-table">
+
+                        <div class="ca-right">
+                            <div class="face-container"  id="face-container">
+                                <canvas id="canvas" class="canvas"  width="420" height="315"></canvas>
+                                <video id="video"  class="video" preload autoplay loop muted width="420" height="315"></video>
+                                <img id="image"   class="image"  th:src="@{/images/ca.jpg}">
+                            </div>
+                            <div id="face-console" class="face-console-class"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{${urls.getForLookupPath('/plugins/tracking/tracking-min.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/plugins/tracking/data/face-min.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/plugins/tracking/data/eye-min.js') }}"></script>
+    <script th:src="@{${urls.getForLookupPath('/plugins/tracking/data/mouth-min.js') }}"></script>
+    <script type="text/javascript">
+
+        var faceTime = 1000;
+        var faceFlag = true;
+        var faceTab = true;
+
+        $(function(){
+            if(hasUserMedia()) {
+                initFace();
+            } else {
+                top.toast.warn("浏览器不支持或未检测到摄像头设备");
+            }
+        });
+
+
+        /**
+         * 初始化人脸识别
+         */
+        function initFace() {
+
+            var video = document.getElementById('video');
+            var canvas=document.querySelector("canvas");
+            var context = canvas.getContext('2d');
+
+            var tracker = new tracking.ObjectTracker('face');
+            tracker.setInitialScale(4);
+            tracker.setStepSize(1.7);
+            tracker.setEdgesDensity(0.1);
+
+            tracking.track('#video', tracker, {camera: true});
+            tracker.on('track', function (event) {
+
+                if(faceFlag && faceTab) {
+                    faceFlag = false;
+                    $(".face-container .rect").remove();
+                    if (event.data.length === 0) {
+                        appendConsole("没有检测到人脸,请靠近摄像头");
+                        window.setTimeout(function(){ faceFlag = true; }, faceTime);
+                    } else{
+                        event.data.forEach(function (rect) {
+                            var rectDiv = $("<div class='rect'></div>").appendTo($(".face-container"));
+                            rectDiv.css({ width : rect.width + "px", height : rect.height + "px", top : rect.y + "px", left : (rect.x + 40) + "px" });
+                            appendConsole("提取到人脸,准备验证...", true);
+                            context.drawImage(video, 0, 0, 420 , 315);
+                            var imageStr = canvas.toDataURL("image/png");
+                            $.ajax({
+                                url : ctx + "admin/base/sign/do",
+                                type : "POST",
+                                cache : false,
+                                data : { faceImage : imageStr, signId : $("#signId").val() },
+                                dataType : "json",
+                                beforeSend : function() {
+                                    appendConsole("正在验证...", true);
+                                },
+                                success : function(rs) {
+                                    var code = rs.code, msg = rs.msg ;
+                                    if(code === 1) {
+                                        appendConsole(msg, true);
+                                        top.window[LS.getQueryVariable("windowName")].refresh();
+                                        window.setTimeout(function(){ faceFlag = true; }, faceTime);
+                                    } else {
+                                        appendConsole(msg, false);
+                                        window.setTimeout(function(){ faceFlag = true; }, faceTime);
+                                    }
+                                },
+                                error : function() {
+                                    appendConsole("验证失败,请重试");
+                                    window.setTimeout(function(){ faceFlag = true; }, faceTime);
+                                }
+                            });
+                        });
+                    }
+                }
+
+            });
+        }
+
+        function appendConsole(msg, flag) {
+            var currentDate = new Date();
+            var hour = currentDate.getHours();
+            var minute = currentDate.getMinutes();
+            var second = currentDate.getSeconds();
+            var ShowTime = (hour < 10 ? "0" + hour : hour) + ":";
+            ShowTime = ShowTime + (minute < 10 ? "0" + minute : minute) + ":";
+            ShowTime = ShowTime + (second < 10 ? "0" + second : second);
+            var c = $("#face-console");
+            c.append($("<div class='console "+(flag ? "green" : "")+"'>【"+ShowTime+"】: "+msg+"</div>"));
+            c.scrollTop(10000000);
+        }
+
+        function hasUserMedia(){
+            return !!(navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia);
+        }
+
+
+    </script>
+</body>
+</html>

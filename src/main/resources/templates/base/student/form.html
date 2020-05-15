@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head th:include="common :: header(title=~{::title}, links=~{}, scripts=~{}, styles=~{::style})">
+    <meta charset="utf-8"/>
+    <title></title>
+    <style>
+        .img-container {
+            width: 80px;
+            height: 80px;
+            border: 1px solid #ddd;
+            margin: 15px;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .img-tips {
+            color: #a09f9f;
+            margin: 0 15px 15px 15px;
+        }
+    </style>
+</head>
+<body class="no-bg mCustomScrollbar" data-mcs-theme="minimal-dark">
+    <div class="layui-fluid" style="padding-bottom: 100px;">
+        <form id="form" class="layui-form layui-form-pane" lay-filter="form" th:action="@{${bean}==null ? '/admin/base/student/add' : '/admin/base/student/update'}">
+            <input type="hidden" id="id" name="id" th:value="${bean?.id}">
+            <input type="hidden" id="oldSex" th:value="${bean?.sex}">
+            <input type="hidden" id="photo" th:value="${bean == null ? '' : bean.photo}">
+
+            <div class="layui-form-item" pane="">
+                <label class="layui-form-label">学生照片</label>
+                <div class="layui-input-block">
+                    <div class="img-container">
+                        <img id="img-show" th:src="@{/images/default-header.jpg}">
+                        <input type="file" id="file" name="file" style="display: none;">
+                    </div>
+                    <div class="img-tips">点击上传学生照片，如不上传将无法实现人脸识别签到</div>
+                </div>
+            </div>
+
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">学号</label>
+                <div class="layui-input-block">
+                    <input type="text" name="no" id="no" th:value="${bean?.no}" lay-verify="required|valid" lay-verType='tips'
+                           th:attr="lay-oldValue=${bean?.no},lay-validUrl=@{/admin/base/student/validate}" autocomplete="off" class="layui-input" placeholder="">
+                </div>
+            </div>
+
+            <div>
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-block">
+                    <input type="text" name="name" id="name" th:value="${bean?.name}" lay-verify="required" lay-verType='tips' autocomplete="off" class="layui-input"
+                           placeholder="">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">性别</label>
+                <div class="layui-input-block">
+                    <select id="sex" name="sex" lay-verify="required" lay-verType='tips' lay-filter="sex">
+                        <option value="">请选择性别</option>
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">出生日期</label>
+                <div class="layui-input-block">
+                    <input type="text" name="birth" id="birth" th:value="${bean?.birth}" lay-verType='tips' autocomplete="off" class="layui-input" placeholder=""
+                           >
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">手机号码</label>
+                <div class="layui-input-block">
+                    <input type="text" name="phone" id="phone" th:value="${bean?.phone}" lay-verType='tips'
+                           autocomplete="off" class="layui-input" placeholder="">
+                </div>
+            </div>
+
+            <button lay-submit lay-filter="doSubmit" id="btn-submit" style="display: none;">提交</button>
+        </form>
+    </div>
+    <script type="text/javascript">
+        layui.use(['form', 'laydate'], function() {
+
+
+            layui.form.val("form", {
+                "sex": $("#oldSex").val()
+            });
+
+            // layui.laydate.render({
+            //     elem: '#birth'
+            // });
+
+
+            var path = $("#photo").val();
+            if (path !== "") {
+                $("#img-show").attr("src", ctx + path.substring(1))
+            }
+
+            $("#img-show").click(function() {
+                $("#file").click();
+            });
+
+            $("input[type='file']").change(function() {
+                var objUrl = LS.getObjectURL(this.files[0]);
+                if (objUrl) {
+                    $("#img-show").attr("src", objUrl);
+                }
+            });
+
+
+            layui.form.on('submit(doSubmit)', function(data) {
+                var formData = data.field;
+                var fData = new FormData();
+                for (var key in formData) {
+                    fData.append(key, formData[key]);
+                }
+
+                var input = $("#file");
+                if (input.val() !== "") {
+                    var imgFile = document.getElementById("file");
+                    var imgObj = imgFile.files[0];
+                    fData.append("file", imgObj);
+                }
+
+                LS.ajaxUpload($("form").attr("action"), fData, function(rs) {
+                    if (rs.code === 0) {
+                        top.toast.error(rs.msg);
+                    } else if (rs.code === 1) {
+                        top.toast.success(rs.msg);
+                        if (top.formSubmitCallback) top.formSubmitCallback(rs);
+                    } else {
+                        top.toast.warn("提交失败,出现未知错误");
+                    }
+                });
+
+                return false;
+            });
+
+
+        });
+
+
+        function submit() {
+            $("#btn-submit").click();
+        }
+    </script>
+</body>
+</html>

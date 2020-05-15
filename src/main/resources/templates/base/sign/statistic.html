@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head th:include="common :: header(title=~{::title}, links=~{}, scripts=~{}, styles=~{})">
+    <meta charset="utf-8"/>
+    <title></title>
+</head>
+<body>
+    <div class="b-container">
+        <div class="b-layout b-layout-center">
+            <div class="layui-fluid ls-card-fluid">
+                <div class="layui-card ls-card">
+                    <div class="layui-form layui-card-header layui-form-pane">
+                        <form>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">课堂名</label>
+                                    <div class="layui-input-inline">
+                                        <select id="signId" lay-filter="signId">
+                                            <option value="">请选择</option>
+                                            <option th:each="s:${signs}" th:value="${s.id}" th:text="${s.name}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux" id="info">
+                                        <div th:each="s:${signs}" th:attr="id=${'info-'+s.id}, totalNum=${s.totalNum}, signNum=${s.signNum}"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">学号</label>
+                                    <div class="layui-input-inline">
+                                        <input id="no" type="text" class="layui-input"/>
+                                    </div>
+                                    <div class="layui-btn-group">
+                                        <button type="button" class="layui-btn layui-btn-normal" onclick="javascript:$('#data_list').bootstrapTable('refresh');"><i class="fa fa-search fa-fw"></i>查询
+                                        </button>
+                                        <button type="reset" class="layui-btn layui-btn-primary"><i class="fa fa-rotate-left fa-fw"></i>重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="layui-card-body ls-body-table">
+                        <table id="data_list"></table>
+                        <div id="toolbar">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" th:inline="javascript">
+    </script>
+    <script type="text/javascript">
+        LS.initLayForm({
+            initFun: function(layo) {
+                LS.bootstrapTable("data_list", {
+                    url: ctx + "admin/base/sign/list",
+                    search: false,
+                    toolbar: "#toolbar",
+                    showToggleQuery: false,
+                    pageSize: 200,
+                    pageList: [200, 500],
+                    columns: [
+                        {checkbox: true, width: "5%"},
+                        {
+                            width: "120px", field: "photo", title: "照片", align: 'center', formatter: function(value, row) {
+                                if (!value) {
+                                    value = "/images/default-header.jpg";
+                                }
+                                return "<img src='" + ctx + value.substring(1) + "' style='width: 50px; height: 50px;' >"
+                            }
+                        },
+                        {
+                            width: "120px", field: "no", title: "学号", align: 'center', formatter: function(value, row) {
+                                return "<a class='td-a' href='javascript:;'>" + value + "</a>";
+                            }
+                        },
+                        {width: "90px", field: "name", title: "姓名", align: 'center'},
+                        {width: "60px", field: "sex", title: "性别", align: 'center'},
+                        {width: "120px", field: "birth", title: "生日", align: 'center'},
+                        {width: "100px", field: "phone", title: "手机号码", align: 'center'},
+                        {
+                            width: "120px", field: "isSuccess", title: "是否签到", align: 'center', formatter: function(value, row) {
+                                if (value) {
+                                    return "<span style='font-weight: bold; color: green'>已签到</span>"
+                                } else {
+                                    return "<span style='font-weight: bold; color: red'>未签到</span>"
+                                }
+                            }
+                        },
+                        {width: "120px", field: "signTime", title: "签到时间", align: 'center'},
+                        {width: "120px", field: "times", title: "总缺勤次数", align: 'center'}
+                    ],
+
+                    queryParams: function(sParams) {
+                        return getParams(sParams);
+                    }
+
+                });
+
+                layo.form.on("select(signId)", function(v) {
+                    $('#data_list').bootstrapTable('refresh');
+                    var div = $("#info-" + $("#signId").val());
+                    $("#info").html("总人数：" + div.attr("totalNum") + "，已签到人数：" + div.attr("signNum"))
+                })
+
+
+                $("#no").blur(function() {
+                    $('#data_list').bootstrapTable('refresh');
+                })
+
+            }
+        });
+
+        function getParams(sParams) {
+            var params = sParams || {};
+            params['signId'] = $("#signId").val();
+            params['no'] = $("#no").val();
+            return params;
+        }
+    </script>
+</body>
+</html>

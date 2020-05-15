@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <title >登录</title>
+    <link rel="stylesheet" th:href="@{/plugins/animate/animate.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <script type="text/javascript" th:inline="javascript">
+        if (window.parent != window) {
+            window.parent.location.reload(true);
+        }
+        /*<![CDATA[*/
+        var ctx = /*[[@{/}]]*/;
+        /*]]>*/
+    </script>
+</head>
+<body style="background-color: #f1f1f1;">
+    <header class="t-navbar">
+        <div class="t-navbar-header">
+            <div class="logo"><a href=""></a></div>
+        </div>
+    </header>
+    <div class="login-main">
+        <div class="login-box">
+            <div class="login-box-header">系统登录</div>
+            <div class="login-box-form">
+                <form id="login-from" th:action="@{/admin/login}" method="post">
+                    <input type="hidden" id="publicKeyExponent" th:value="${publicKeyExponent }">
+                    <input type="hidden" id="publicKeyModulus" th:value="${publicKeyModulus }">
+                    <div class="form-error"></div>
+                    <div class="form-item">
+                        <label class="form-label" for="userName">帐&nbsp;&nbsp;&nbsp;&nbsp;号:</label>
+                        <input class="form-input" type="text" id="userName" name="userName" value="" autocomplete="off" placeholder="请输入您的登录账号">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label" for="password">密&nbsp;&nbsp;&nbsp;&nbsp;码:</label>
+                        <input class="form-input" type="password" id="password" name="password" value="" autocomplete="off" placeholder="请输入您的登录密码">
+                    </div>
+                    <div class="form-item" style="display: none">
+                    </div>
+                    <div class="form-item" style="text-align: center; padding-top: 20px;">
+                        <button id="login-btn" type="button" class="btn btn-lg btn-primary" style="width: 200px;">登&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+                        <div id="loging">
+                            <div class="object" id="object_1"></div>
+                            <div class="object" id="object_2"></div>
+                            <div class="object" id="object_3"></div>
+                            <div class="object" id="object_4"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="copyright">
+        </div>
+    </footer>
+
+    <script th:src="@{/js/jquery-1.11.3.min.js}"></script>
+    <script th:src="@{/plugins/jquery-plugins/jquery.backstretch.min.js}"></script>
+    <script th:src="@{/js/security.js}"></script>
+
+    <script type="text/javascript">
+        $(function() {
+            $("#login-btn").click(function() {
+                submit();
+            });
+            $("#userName,#password,#validCode").keypress(function(event) {
+                if (event.keyCode == 13) submit();
+            });
+            $(document).ajaxStop(function() {
+                loginEnd();
+            });
+        });
+
+        function submit() {
+            var userName = $("#userName").val();
+            if (userName == "") {
+                $("#userName").focus();
+                return error("请输入账户名")
+            }
+            var password = $("#password").val();
+            if (password == "") {
+                $("#password").focus();
+                return error("请输入账户密码");
+            }
+
+            $.ajax({
+                url: $("#login-from").attr("action"),
+                type: "POST",
+                cache: false,
+                data: {userName: userName, password: password, validCode: ""},
+                dataType: "json",
+                beforeSend: function(XMLHttpRequest) {
+                    loginStart();
+                },
+                success: function(rs) {
+                    var code = rs.code;
+                    if (code == 0) {
+                        error(rs.msg);
+                        resetRandCodeImage();
+                    } else if (code == 1) {
+                        error("登录成功,进入首页...");
+                        window.location.href = ctx + "admin/index";
+                    }
+                },
+                error: function() {
+                    error("登录失败,系统错误");
+                    resetRandCodeImage();
+                }
+            });
+        }
+
+        function loginStart() {
+            $("#login-btn").hide();
+            $("#loging").show();
+            error("正在登录...")
+        }
+
+        function loginEnd() {
+            $("#login-btn").show();
+            $("#loging").hide();
+        }
+
+        function resetRandCodeImage() {
+
+        }
+
+        function error(msg) {
+            $(".form-error").html(msg);
+            return false;
+        }
+    </script>
+</body>
+</html>

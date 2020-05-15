@@ -1,0 +1,42 @@
+
+#customer config
+path: 
+  admin: /admin
+  front: /front
+  wap: /wap
+  api: /api
+
+#The following is shiro permissions framework configuration
+shiro:
+  loginUrl: 
+    admin: /admin/login
+  cache:
+    resourceName: classpath:cache/ehcache-shiro.xml
+    authorizationCachingEnabled: true
+    authorizationCacheName: shiro-authorizationCache
+    activeSessionsCacheName: shiro-activeSessionCache
+  session:
+    timeout: 1800000
+    interval: 1800000
+  cookie:
+    rememberMe:
+      maxAge: 864000
+  auth:
+    hashIterations: 1
+
+### kaptcha validate code
+kaptcha:
+  border:
+    color: 105,179,90
+  textproducer:
+    font: 
+      names: Arial, Courier
+      color: blue
+      size: 30
+    char:
+      length: 4
+  image:
+    width: 140
+    height: 36
+  session:
+    key: KAPTCHA_SESSION_KEY

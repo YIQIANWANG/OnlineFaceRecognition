@@ -1,0 +1,91 @@
+#server
+server:
+  port: 8080
+  error:
+    path: /error
+  servlet:
+    context-path: /
+  tomcat:
+    uri-encoding: UTF-8
+
+#spring
+spring:
+  profiles:
+    active: dev,common
+
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: MyHikariCP
+      minimum-idle: 5
+      idle-timeout: 180000
+      maximum-pool-size: 10
+      auto-commit: true
+      max-lifetime: 1800000
+      connection-timeout: 30000
+
+  jpa:
+    database: MYSQL
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+    properties:
+      hibernate:
+        format_sql: true
+
+  thymeleaf:
+    enabled: true
+    mode: HTML
+    cache: false
+    encoding: UTF-8
+    suffix: .html
+    prefix: classpath:/templates/
+    template-resolver-order: 1
+
+  freemarker:
+    enabled: false
+
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+
+  servlet:
+    multipart:
+      enabled: false
+
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths:
+            - /css/**
+            - /js/**
+            - /plugins/**
+
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:cache/ehcache-spring.xml
+
+#customer config
+#system
+sys:
+  init:
+    data: true
+  upload:
+    maxUploadSize: 104857600
+    path: C:/Users/16281281/Desktop/
+
+
+
+
